@@ -1,0 +1,10 @@
+{
+  "name": "Alert",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "iconクリックでアラートを表示する",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["activeTab", "scripting","tabs"]
+}

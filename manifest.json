@@ -1,15 +1,13 @@
 {
-  "name": "Alert",
+  "name": "URL Rotation",
   "version": "1.0",
   "manifest_version": 3,
-  "description": "iconクリックでアラートを表示する",
+  "description": "ページ巡回",
   "background": {
     "service_worker": "background.js"
   },
-  "action": {},
-  "permissions": ["activeTab", "scripting","tabs"],
-  "content_scripts": [{
-    "matches": ["https://www.kimurak.net/"],
-    "js": ["content-script.js"]
-  }]
+  "action": {
+    "default_popup": "popup.html"
+  },
+ "permissions": ["activeTab","alarms","scripting","tabs","webNavigation"]
 }
