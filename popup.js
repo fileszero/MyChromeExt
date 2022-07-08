@@ -1,31 +1,21 @@
-window.onload = function() {
-    chrome.storage.sync.get("data", function(items) {
-      if (!chrome.runtime.error) {
+
+window.onload = async function() {
+    let items = await getStorage([DATA_SITES_TEXT]);
+    console.info(items);
+    if (!chrome.runtime.error) {
         console.log(items);
-        document.getElementById("sites").value = items.data;
-      }
-    });
+        console.log(items[DATA_SITES_TEXT]);
+        document.getElementById("sites").value = items[DATA_SITES_TEXT];
+    };
   }
 
 document.getElementById("btn").addEventListener("click", async () => {
     const sites_text=document.getElementById("sites").value;
-    chrome.storage.sync.set({ "data" : sites_text }, function() {
-        if (chrome.runtime.error) {
-          console.log("Runtime error.");
-        }
-      });
+    var save_data = {};
+    save_data[DATA_SITES_TEXT]=sites_text;
+    await setStorage(save_data);
 
-    const sites = sites_text.split(/\n/);
-    const pages=[];
-    for(line of sites){
-        console.info(line);
-        const cols=line.replace(/[\s\t]+/,"\t").split(/\t/)
-        if(cols.length>=1){
-            const url=cols[0];
-            const stay=cols.length>=2 ? parseInt(cols[1]) : 1;
-            pages.push(new PageDef(url,stay))
-        }
-    }
+    const pages=TextToPageDefArray(sites_text);
     if(pages.length>0){
         await start(pages);
     }
