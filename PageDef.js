@@ -17,12 +17,14 @@ function TextToPageDefArray(sites_text){
     if( sites_text){
         const sites = sites_text.split(/\n/);
         for(line of sites){
-            console.info(line);
-            const cols=line.replace(/[\s\t]+/,"\t").split(/\t/)
-            if(cols.length>=1){
-                const url=cols[0];
-                const stay=cols.length>=2 ? parseInt(cols[1]) : 1;
-                pages.push(new PageDef(url,stay))
+            if(line.trim().startsWith("http")){
+                console.info(line);
+                const cols=line.replace(/[\s\t]+/,"\t").split(/\t/)
+                if(cols.length>=1){
+                    const url=cols[0];
+                    const stay=cols.length>=2 ? parseInt(cols[1]) : 1;
+                    pages.push(new PageDef(url,stay))
+                }
             }
         }
     }
