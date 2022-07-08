@@ -11,19 +11,12 @@ window.onload = async function() {
 
 document.getElementById("btn").addEventListener("click", async () => {
     const sites_text=document.getElementById("sites").value;
-    var save_data = {};
-    save_data[DATA_SITES_TEXT]=sites_text;
-    await setStorage(save_data);
-
-    const pages=TextToPageDefArray(sites_text);
-    if(pages.length>0){
-        await start(pages);
-    }
+    await start(sites_text);
 });
-async function start(pages){
+async function start(sites_text){
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     targetTabId=tab.id;
-    chrome.runtime.sendMessage({ type:"setTab",tabId:targetTabId,pages:pages });
+    chrome.runtime.sendMessage({ type:"setTab",tabId:targetTabId,sites_text:sites_text });
     //mainLoop();
     //chrome.tabs.update(tab.id, {url:"https://calendar.google.com/calendar/u/1/r"});
 }

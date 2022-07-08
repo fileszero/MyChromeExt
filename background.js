@@ -1,52 +1,44 @@
 (function()
 {
     importScripts('PageDef.js')
-    let pages=[]
 
 
-    chrome.runtime.onInstalled.addListener(async ({}) => {
-        console.log('oninstalled');
-        await loadPages();
-    });
-
-    async function loadPages(){
-        let items = await getStorage([DATA_SITES_TEXT]);
-        this.pages=TextToPageDefArray(items[DATA_SITES_TEXT]);
-        console.log(this.pages);
+    async function getPages(){
+        const items = await getStorage([DATA_SITES_TEXT]);
+        const pages=TextToPageDefArray(items[DATA_SITES_TEXT]);
+        console.log(pages);
+        return pages;
     }
 
-    var targetTabId=null;
-    var pageIdx=null;
+    async function setPages(sites_text){
+        var save_data = {};
+        save_data[DATA_SITES_TEXT]=sites_text;
+        await setStorage(save_data);
+    }
 
     async function getTabId(){
-        if(!targetTabId){
-            let items = await getStorage([DATA_TAB_ID]);
-            targetTabId=parseInt(items[DATA_TAB_ID])
-        }
-        return targetTabId;
+        const items = await getStorage([DATA_TAB_ID]);
+        const id=parseInt(items[DATA_TAB_ID])
+        return id;
     }
     async function setTabId(tabId){
         var save_data = {};
         save_data[DATA_TAB_ID]=tabId;
         await setStorage(save_data);
-        targetTabId=tabId;
     }
 
     async function getPageIdx(){
-        if(!pageIdx){
-            let items = await getStorage([DATA_PAGE_IDX]);
-            pageIdx=parseInt(items[DATA_PAGE_IDX])
-            if(!pageIdx){
-                pageIdx=0;
-            }
+        const items = await getStorage([DATA_PAGE_IDX]);
+        const Idx=parseInt(items[DATA_PAGE_IDX])
+        if(!Idx){
+            return 0;
         }
-        return pageIdx;
+        return Idx;
     }
     async function setPageIdx(Idx){
         var save_data = {};
         save_data[DATA_PAGE_IDX]=Idx;
         await setStorage(save_data);
-        pageIdx=Idx;
     }
 
 
@@ -59,14 +51,15 @@
     });
 
     async function showPage(){
-        if(this.pages.length<=0){
-            await loadPages();
+        const pages=await getPages();
+        if(pages.length<=0){
+            return;
         }
         let idx=await getPageIdx();
-        if(idx>=this.pages.length){
+        if(idx>=pages.length){
             idx=0;
         }
-        let page=this.pages[idx];
+        let page=pages[idx];
         idx++;
         await setPageIdx(idx);
 
@@ -81,9 +74,7 @@
     chrome.runtime.onMessage.addListener(async  (request, sender, sendResponse) => {
         if( request.type=="setTab"){
             await setTabId(request.tabId);
-            if(request.pages.length>0){
-                this.pages=request.pages;
-            }
+            await setPages(request.sites_text);
             await showPage();
         }
     });
