@@ -17,6 +17,7 @@ async function start(sites_text){
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     targetTabId=tab.id;
     chrome.runtime.sendMessage({ type:"setTab",tabId:targetTabId,sites_text:sites_text });
+    window.close();
     //mainLoop();
     //chrome.tabs.update(tab.id, {url:"https://calendar.google.com/calendar/u/1/r"});
 }
