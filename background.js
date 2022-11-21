@@ -79,5 +79,31 @@
         }
     });
 
+    chrome.tabs.onCreated.addListener( async (newtab) => {
+        console.log("chrome.tabs.onCreated");
+        console.log(newtab);
+        if(newtab.url.indexOf("www.kimurak.net")!= -1){
+            await setTabId(newtab.id);
+            await showPage();
+        }
+    });
+    //showPage();
+    // chrome.tabs.create({url: 'onboarding.html' }, async (newtab) => {
+    //     console.log(newtab);
+    //     await setTabId(newtab.id);
+    //     await showPage();
+    // });
+
+    // chrome.runtime.onInstalled.addListener( (reason) => {
+    //     console.log("chrome.runtime.onInstalled.addListener:" + reason);
+    //     if (reason.reason == chrome.runtime.OnInstalledReason.INSTALL || reason.reason == chrome.runtime.OnInstalledReason.UPDATE) {
+    //       chrome.tabs.create({url: 'onboarding.html' }, async (newtab) => {
+    //         console.log(newtab);
+    //         await setTabId(newtab.id);
+    //         await showPage();
+    //       });
+    //     }
+    //   });
+
 })();
 
